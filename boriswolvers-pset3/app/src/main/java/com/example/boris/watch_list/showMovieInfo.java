@@ -86,8 +86,9 @@ public class showMovieInfo extends AppCompatActivity {
             typeView.setText(Html.fromHtml("<b> Type: </b> <br>" + type));
 
             // obtain the image url using asynctask again (getposterImage is a class beneath this class)
-            new getPosterImage((ImageView) findViewById(R.id.imageViewMovie)).execute(posterimage);
-
+            if (!posterimage.equals("N/A")) {
+                new getPosterImage((ImageView) findViewById(R.id.imageViewMovie)).execute(posterimage);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();

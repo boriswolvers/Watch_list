@@ -23,6 +23,7 @@ public class watchList extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private ListView listViewMovies;
     private SharedPreferences prefs;
+    private Bundle extras;
     public static final String PREFERENCES = "movies_preferences";
 
     @Override
@@ -31,8 +32,12 @@ public class watchList extends AppCompatActivity {
         setContentView(R.layout.activity_watch_list);
 
         // obtain movie title user wants to add to watch list
-        Bundle extras = getIntent().getExtras();
+        extras = getIntent().getExtras();
         String from_activity = extras.getString("activity");
+        setList(from_activity);
+    }
+
+    private void setList(String from_activity) {
 
         if (from_activity.equals("add_movie")) {
             title_for_list = extras.getString("title_for_list");
@@ -91,7 +96,7 @@ public class watchList extends AppCompatActivity {
                 prefs = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.remove(movie);
-                editor.commit();
+                editor.apply();
 
                 Toast toast = Toast.makeText(watchList.this, "Movie deleted!", Toast.LENGTH_SHORT);
                 toast.show();
@@ -102,5 +107,23 @@ public class watchList extends AppCompatActivity {
             Toast toast = Toast.makeText(this, "Click on movie to delete from watch list!", Toast.LENGTH_LONG);
             toast.show();
         }
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // saving key value pair -> activity main, so whenever the screen is rotated it is just the
+        // same as the previous activity was main
+        outState.putString("activity", "main");
+    }
+
+    public void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+
+        // obtaining string
+        String from_activity = inState.getString("activity");
+
+        // setting the listview
+        setList(from_activity);
     }
 }
